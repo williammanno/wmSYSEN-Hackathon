@@ -33,7 +33,8 @@ flowchart TB
         IntelA["Intel: Malaysia Penang, Vietnam Ho Chi Minh"]
     end
 
-    subgraph Transport["Transport - Synthetic Monitoring Active"]
+    subgraph Transport["Transport"]
+        direction LR
         Air["Air Freight 14-24 hrs"]
         Ocean["Ocean Freight 15-30 days"]
     end
