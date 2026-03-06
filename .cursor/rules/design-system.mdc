@@ -1,10 +1,11 @@
 ---
 alwaysApply: true
 ---
+## Background: use #212121
 
 ## Buttons
 - Primary button: use the `.button` and `.icon` classes defined in the "Primary/API/LLM button" snippet below for any button that triggers an API or LLM request.
-- Secondary button: use the `.secondary-button` class defined in the "Secondary button" snippet below for any secondary/less-prominent actions.
+- Secondary button: use the `.secondary-button` class defined in the "Secondary button" snippet below for any secondary/less-prominent actions. When used within cards, pair secondary buttons with the `.card` style defined in the "Cards" section.
 
 ```css
 /* Primary/API/LLM button – From Uiverse.io by adeladel522 */
@@ -114,5 +115,19 @@ alwaysApply: true
 .secondary-button:hover::before {
   background-color: #fff;
   width: 3rem;
+}
+```
+
+## Cards
+- Card container: use the `.card` class defined below for any card-like surfaces, especially when presenting secondary actions or grouped content.
+
+```css
+.card {
+  width: 190px;
+  height: 254px;
+  border-radius: 30px;
+  background: #212121;
+  box-shadow: 15px 15px 30px rgb(25, 25, 25),
+    -15px -15px 30px rgb(60, 60, 60);
 }
 ```
