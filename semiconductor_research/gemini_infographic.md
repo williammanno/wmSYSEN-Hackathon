@@ -3,6 +3,8 @@
 **Real-time synthetic data augmentation for tracking semiconductor supply chains across trans-Pacific routes.**  
 Monitoring Intel, Nvidia, and Broadcom logistics.
 
+> **[View the full interactive infographic →](https://gemini.google.com/share/db1f1be5ba57)**
+
 ---
 
 ## Key Metrics
@@ -130,4 +132,4 @@ Traditional historical models fail during unprecedented global events. By inject
 
 ---
 
-> **Interactive version:** See `gemini_infographic.html` for the full dashboard with Chart.js visualizations. Open in a browser to view the live charts.
+> **Other versions:** [Original Gemini infographic](https://gemini.google.com/share/db1f1be5ba57) | `gemini_infographic.html` — local HTML dashboard with Chart.js (open in browser)
