@@ -1,0 +1,59 @@
+description: Data visualization and chart styling standards
+alwaysApply: true
+---
+
+## Chart Layout and Structure
+
+- When implementing **any chart or time series visualization**, wrap it in a `div` with class `chart-card` and follow this general structure:
+  - `div.chart-card`
+    - `div.header` containing a left-aligned title (`.logo`) and a right-aligned secondary action (`.open`).
+    - `fieldset.crypto-switch` for switching between series (e.g., BTC/ETH/SOL/TET) using `input[type="radio"]` and `label` pairs, plus a `.slider` element for the animated background.
+    - `div.price-infos` containing one or more `.price-info` sections, each with:
+      - `.price` (primary metric, e.g., current value)
+      - `.stats` with `.amount` and `.change` elements.
+    - `div.chart` containing one or more `svg` elements with `path` elements for the chart line.
+
+## Required CSS Pattern
+
+- Charts should reuse or closely follow this **CSS pattern** (class names must match, content can be customized):
+  - `.chart-card` for the main card container (dark background, rounded corners, drop shadow).
+  - `.header`, `.logo`, `.open` for the header layout and hover interaction.
+  - `.crypto-switch`, its `input`/`label` structure, and `.slider` for the segmented switch and animated slider.
+  - `.price-infos`, `.price-info`, `.price-info .price`, `.price-info .stats`, `.price-info .change` for the numeric summary.
+  - `.chart`, `.chart svg`, `.chart path` with an animated `stroke-dasharray` / `stroke-dashoffset` and `@keyframes draw` to animate the chart line.
+  - Use `:has()` selectors on `.chart-card` to toggle which `svg` and `.price-info` are visible based on the checked radio input.
+
+## HTML/CSS Reference Snippet
+
+- Treat the following as the **canonical reference** for how charts should look and behave (you may adapt text, IDs, and values as needed, but keep the structure and class names, using `chart-card` instead of `crypto-card`):
+
+```html
+<div class="chart-card">
+  <div class="header">
+    <span class="logo">CryptoApp</span>
+    <span class="open">Open App →</span>
+  </div>
+
+  <fieldset class="crypto-switch">
+    <input type="radio" id="bitcoin" name="crypto" checked />
+    <label for="bitcoin">BTC</label>
+    <input type="radio" id="ethereum" name="crypto" />
+    <label for="ethereum">ETH</label>
+    <input type="radio" id="solana" name="crypto" />
+    <label for="solana">SOL</label>
+    <input type="radio" id="tether" name="crypto" />
+    <label for="tether">TET</label>
+    <div class="slider"></div>
+  </fieldset>
+
+  <div class="price-infos">
+    <!-- .price-info blocks per series -->
+  </div>
+
+  <div class="chart">
+    <!-- one or more <svg> charts with <path> lines -->
+  </div>
+</div>
+```
+
+- The corresponding CSS (colors, layout, animation) should be **copied or closely mirrored** from the original snippet you provided so that all charts in this project share this same interactive card look and feel.
