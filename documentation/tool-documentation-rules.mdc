@@ -1,0 +1,99 @@
+# Tool Documentation Rules
+
+Use this document when writing or reviewing documentation for **tools**—APIs, MCP tools, CLI commands, library functions, or any callable interface. The goal is excellent, easy-to-follow documentation so users understand how each function works, what to pass in, and what to expect.
+
+---
+
+## 1. Document Structure for Each Tool
+
+Every documented tool MUST include the following sections in this order:
+
+| Section | Required | Description |
+|--------|----------|-------------|
+| **Name & one-line summary** | Yes | Tool name and a single sentence describing what it does. |
+| **Signature / usage** | Yes | How the tool is invoked (syntax, endpoint, or function signature). |
+| **Parameters / inputs** | Yes | Each input with name, type, required/optional, and description. |
+| **Output / return value** | Yes | What the tool returns (type, shape, or example). |
+| **Errors / exceptions** | If applicable | When and why the tool can fail; error codes or messages. |
+| **Examples** | Yes | At least one minimal example and one realistic example. |
+| **Related tools** | Optional | Links or references to related tools. |
+
+---
+
+## 2. Parameters and Inputs
+
+For **each** parameter or input, document:
+
+- **Name** – Exact name as used in the API/signature.
+- **Type** – Data type (e.g. `string`, `number`, `array`, `object`, `boolean`).
+- **Required vs optional** – Whether the parameter must be supplied; if optional, state the default.
+- **Description** – What the parameter controls and how it affects behavior.
+- **Valid values** – Enums, ranges, formats, or constraints (e.g. "one of: `public`, `auth`" or "ISO 8601 date").
+- **Example value** – A concrete example when it’s not obvious.
+
+Use a consistent format, e.g. a table or a structured block:
+
+```markdown
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `schemas` | string[] | No | `["public"]` | Schemas to include. |
+| `verbose` | boolean | No | `false` | Include column details when true. |
+```
+
+---
+
+## 3. Output and Return Value
+
+- Describe the **structure** of the response (e.g. JSON object, array, or status code).
+- List **important fields** and their meaning.
+- Include a **concrete example** of a successful response (e.g. sample JSON).
+- If the tool returns different shapes depending on inputs (e.g. `verbose: true`), document each variant.
+
+---
+
+## 4. Errors and Exceptions
+
+- List **possible failure modes** (e.g. invalid input, permission denied, rate limit).
+- For each: **when** it occurs, **what** the user sees (message/code), and **how** to fix or avoid it.
+- Prefer a small table: condition → message/code → suggested action.
+
+---
+
+## 5. Examples
+
+- **Minimal example** – Smallest valid call and its result.
+- **Realistic example** – A typical use case with real-world-like inputs and outputs.
+- Prefer **copy-pastable** snippets (correct syntax, no placeholders unless clearly marked).
+- If the tool is used in a pipeline or with other tools, show that context briefly.
+
+---
+
+## 6. Style and Readability
+
+- Use **active voice** and **present tense** (e.g. "Returns the list of tables").
+- Use **consistent terminology** (e.g. "parameter" vs "argument") across the doc.
+- **Avoid jargon** without a one-line definition; link to a glossary or concept doc if needed.
+- Keep **one main idea per paragraph**; use short paragraphs and lists.
+- Use **headings and tables** so the doc is scannable.
+
+---
+
+## 7. Checklist Before Publishing
+
+- [ ] Every input/parameter is documented with type, required/optional, and description.
+- [ ] Default values are stated for optional parameters.
+- [ ] Return value shape and key fields are described with an example.
+- [ ] At least one minimal and one realistic example are included.
+- [ ] Known errors or failure cases are documented with remediation.
+- [ ] Examples are tested (syntax and behavior) and copy-pastable where possible.
+- [ ] No internal-only or obsolete parameters are documented without marking them as such.
+
+---
+
+## 8. Where to Put Tool Documentation
+
+- **Per-tool**: One file or section per tool (e.g. `docs/tools/list_tables.md` or a section in `API.md`).
+- **Index**: A master list (e.g. `docs/tools/README.md`) that links to each tool and summarizes purpose and typical use.
+- **Version**: If the tool has versions, document the version this doc applies to (e.g. in the title or frontmatter).
+
+Use these rules whenever you create or update documentation for a tool in this project.
