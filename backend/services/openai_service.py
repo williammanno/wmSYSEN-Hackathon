@@ -1,12 +1,18 @@
 """OpenAI GPT-4o integration for text generation."""
 
 import os
+from pathlib import Path
 from typing import Optional
 
 import requests
 from dotenv import load_dotenv
 
-load_dotenv()
+# Load env from backend/.env and repo-root/.env for flexible run locations.
+service_dir = Path(__file__).resolve().parent
+backend_dir = service_dir.parent
+repo_root = backend_dir.parent
+load_dotenv(backend_dir / ".env")
+load_dotenv(repo_root / ".env")
 
 OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")

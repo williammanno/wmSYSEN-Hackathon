@@ -3,7 +3,12 @@ Supply Chain Portal API – semiconductor import/export, planning, tracking.
 Uses OpenAI GPT-4o for LLM, Open-Meteo for weather, routes + CSV for decisions.
 """
 
+import os
+from pathlib import Path
+
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
@@ -22,9 +27,14 @@ from services.csv_service import (
 )
 
 app = FastAPI(title="Supply Chain Portal API")
+
+default_cors_origins = ["http://localhost:5173", "http://127.0.0.1:5173"]
+cors_origins_env = os.getenv("CORS_ORIGINS", "")
+cors_origins = [o.strip() for o in cors_origins_env.split(",") if o.strip()] or default_cors_origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -412,3 +422,37 @@ async def get_lanes():
         }
         for l in SHIPPING_LANES
     ]
+
+
+# ─── Frontend static serving (production) ────────────────────────────────────
+
+BASE_DIR = Path(__file__).resolve().parent
+FRONTEND_BUILD_DIR = Path(os.getenv("FRONTEND_BUILD_DIR", BASE_DIR / "static")).resolve()
+FRONTEND_INDEX = FRONTEND_BUILD_DIR / "index.html"
+
+if FRONTEND_BUILD_DIR.exists():
+    app.mount("/static", StaticFiles(directory=str(FRONTEND_BUILD_DIR)), name="frontend-static")
+
+
+@app.get("/")
+async def serve_frontend_root():
+    """Serve built frontend homepage when available."""
+    if FRONTEND_INDEX.exists():
+        return FileResponse(str(FRONTEND_INDEX))
+    return {"message": "Supply Chain Portal API is running."}
+
+
+@app.get("/{full_path:path}")
+async def serve_frontend_routes(full_path: str):
+    """Serve SPA routes/files in production while preserving API routes."""
+    if full_path.startswith("api"):
+        raise HTTPException(status_code=404, detail="Not Found")
+
+    requested = (FRONTEND_BUILD_DIR / full_path).resolve()
+    if FRONTEND_BUILD_DIR.exists() and str(requested).startswith(str(FRONTEND_BUILD_DIR)) and requested.is_file():
+        return FileResponse(str(requested))
+
+    if FRONTEND_INDEX.exists():
+        return FileResponse(str(FRONTEND_INDEX))
+
+    raise HTTPException(status_code=404, detail="Not Found")
