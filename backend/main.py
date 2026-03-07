@@ -409,6 +409,19 @@ async def debug_env():
     }
 
 
+@app.get("/api/debug/data")
+async def debug_data():
+    """Check which data backend is used and if Supabase returns data."""
+    from services.shipment_service import _backend, load_shipments
+    backend = _backend()
+    rows = load_shipments()
+    return {
+        "backend": backend,
+        "shipment_count": len(rows),
+        "supabase_configured": bool(os.getenv("SUPABASE_URL") and (os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_ANON_KEY"))),
+    }
+
+
 # ─── Reference data for frontend dropdowns ───────────────────────────────────
 
 @app.get("/api/nodes")
