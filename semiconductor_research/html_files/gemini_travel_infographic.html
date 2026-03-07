@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Augmented Semiconductor Supply Chain Logistics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+        }
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 250px;
+            }
+        }
+        .flow-node {
+            background: #1e293b;
+            border: 2px solid #38bdf8;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+        .flow-arrow {
+            color: #fbbf24;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 0.5rem;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased p-4 md:p-8">
+
+    <!-- PALETTE: Vibrant Tech (Sky Blue #38bdf8, Emerald #34d399, Amber #fbbf24, Red #f87171, Indigo #818cf8) -->
+    <!-- NARRATIVE PLAN: 1. Header/KPIs. 2. Logistics Flow Diagram. 3. Multi-modal Transport Times (Bar Chart). 4. Predictive Delay Trajectories (Line Chart). 5. Synthetic Risk Weights (Doughnut Chart). -->
+    <!-- CHART CHOICES & SVG CONFIRMATION: 1. Bar Chart (Compare transit times by route/mode) - Chart.js (Canvas). 2. Line Chart (Change in time with synthetic delays) - Chart.js (Canvas). 3. Doughnut (Composition of risk) - Chart.js (Canvas). CONFIRMATION: NEITHER Mermaid JS NOR SVG were used anywhere in the output. -->
+
+    <div class="max-w-7xl mx-auto space-y-8">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-emerald-400 mb-4">
+                AI-Augmented Semiconductor Supply Chain
+            </h1>
+            <p class="text-slate-300 max-w-3xl mx-auto text-lg">
+                Live tracking profiles and actionable predictions for operations managers. Integrating synthetic logistics data (weather, geopolitics, congestion) to forecast accurate transport times from Asian manufacturing sites to US assembly locations.
+            </p>
+        </header>
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="glass-card rounded-xl p-6 shadow-lg text-center border-t-4 border-sky-400">
+                <h3 class="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-2">Global Tracked Shipments</h3>
+                <div class="text-4xl font-bold text-white mb-1">1,402</div>
+                <div class="text-emerald-400 text-sm font-semibold">&#9650; 12% vs last month</div>
+            </div>
+            <div class="glass-card rounded-xl p-6 shadow-lg text-center border-t-4 border-amber-400">
+                <h3 class="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-2">Avg Port Congestion Delay</h3>
+                <div class="text-4xl font-bold text-white mb-1">+4.2 Days</div>
+                <div class="text-amber-400 text-sm font-semibold">Synthetic Model Warning</div>
+            </div>
+            <div class="glass-card rounded-xl p-6 shadow-lg text-center border-t-4 border-emerald-400">
+                <h3 class="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-2">AI Routing Optimization</h3>
+                <div class="text-4xl font-bold text-white mb-1">94.8%</div>
+                <div class="text-emerald-400 text-sm font-semibold">On-time delivery rate</div>
+            </div>
+        </section>
+
+        <section class="glass-card rounded-xl p-6 shadow-lg">
+            <h2 class="text-2xl font-semibold mb-2 text-white border-b border-slate-700 pb-2">Critical Semiconductor Logistics Nodes</h2>
+            <p class="text-slate-300 mb-6 text-sm">
+                Primary transport corridors mapped between key Asian manufacturing hubs (foundries and memory production) and US-based assembly, testing, and distribution centers for major tech leaders.
+            </p>
+            <div class="flex flex-col gap-4">
+                <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between bg-slate-800/50 p-4 rounded-lg">
+                    <div class="flow-node">
+                        <div class="font-bold text-sky-400">Hsinchu, Taiwan</div>
+                        <div class="text-xs text-slate-300">TSMC / Foundries</div>
+                    </div>
+                    <div class="flow-arrow">&#10230;</div>
+                    <div class="flow-node border-amber-400">
+                        <div class="font-bold text-amber-400">Multi-modal Hubs</div>
+                        <div class="text-xs text-slate-300">Air / Ocean / Rail</div>
+                    </div>
+                    <div class="flow-arrow">&#10230;</div>
+                    <div class="flow-node border-emerald-400">
+                        <div class="font-bold text-emerald-400">Santa Clara, CA</div>
+                        <div class="text-xs text-slate-300">Nvidia HQ / Testing</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between bg-slate-800/50 p-4 rounded-lg">
+                    <div class="flow-node">
+                        <div class="font-bold text-sky-400">Penang, Malaysia</div>
+                        <div class="text-xs text-slate-300">Intel Fabs</div>
+                    </div>
+                    <div class="flow-arrow">&#10230;</div>
+                    <div class="flow-node border-amber-400">
+                        <div class="font-bold text-amber-400">Multi-modal Hubs</div>
+                        <div class="text-xs text-slate-300">Air / Ocean / Truck</div>
+                    </div>
+                    <div class="flow-arrow">&#10230;</div>
+                    <div class="flow-node border-emerald-400">
+                        <div class="font-bold text-emerald-400">Chandler, AZ</div>
+                        <div class="text-xs text-slate-300">Intel Assembly</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between bg-slate-800/50 p-4 rounded-lg">
+                    <div class="flow-node">
+                        <div class="font-bold text-sky-400">Incheon, South Korea</div>
+                        <div class="text-xs text-slate-300">Memory / Packaging</div>
+                    </div>
+                    <div class="flow-arrow">&#10230;</div>
+                    <div class="flow-node border-amber-400">
+                        <div class="font-bold text-amber-400">Multi-modal Hubs</div>
+                        <div class="text-xs text-slate-300">Air / Ocean / Rail</div>
+                    </div>
+                    <div class="flow-arrow">&#10230;</div>
+                    <div class="flow-node border-emerald-400">
+                        <div class="font-bold text-emerald-400">Austin, TX</div>
+                        <div class="text-xs text-slate-300">Broadcom / Intel</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            <section class="glass-card rounded-xl p-6 shadow-lg flex flex-col">
+                <h2 class="text-2xl font-semibold mb-2 text-white border-b border-slate-700 pb-2">Multi-Modal Transport Times</h2>
+                <p class="text-slate-300 mb-6 text-sm">
+                    Baseline comparison of point A to point B transit durations across different logistics modalities. Highlights the severe time disparity between expedited air freight and high-volume ocean/rail hybrid routes.
+                </p>
+                <div class="chart-container flex-grow">
+                    <canvas id="transportChart"></canvas>
+                </div>
+            </section>
+
+            <section class="glass-card rounded-xl p-6 shadow-lg flex flex-col">
+                <h2 class="text-2xl font-semibold mb-2 text-white border-b border-slate-700 pb-2">Geopolitical & Weather Disruption Profiles</h2>
+                <p class="text-slate-300 mb-6 text-sm">
+                    AI-generated synthetic projections for the Hsinchu to Santa Clara ocean route. Demonstrates how injected variables (e.g., South China Sea typhoons, tariff inspections) dynamically alter predicted arrival times over a 30-day window.
+                </p>
+                <div class="chart-container flex-grow">
+                    <canvas id="predictiveChart"></canvas>
+                </div>
+            </section>
+        </div>
+
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div class="glass-card rounded-xl p-6 shadow-lg flex flex-col justify-center">
+                <h2 class="text-2xl font-semibold mb-4 text-white border-b border-slate-700 pb-2">Synthetic Data Matrix</h2>
+                <p class="text-slate-300 mb-4 text-sm">
+                    To generate actionable insights, the AI database synthesizes real-time logistical telemetry with external risk factors. This matrix dictates routing algorithms and inventory buffer recommendations.
+                </p>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="text-sky-400 text-xl mr-3">&#9632;</span>
+                        <div>
+                            <h4 class="font-bold text-white">Meteorological Constraints</h4>
+                            <p class="text-xs text-slate-400">Typhoon tracking, atmospheric pressure anomalies affecting air freight weight limits.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-amber-400 text-xl mr-3">&#9632;</span>
+                        <div>
+                            <h4 class="font-bold text-white">Geopolitical Friction</h4>
+                            <p class="text-xs text-slate-400">Tariff implementations, localized export restrictions, customs holding pattern probability.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-emerald-400 text-xl mr-3">&#9632;</span>
+                        <div>
+                            <h4 class="font-bold text-white">Infrastructural Bottlenecks</h4>
+                            <p class="text-xs text-slate-400">Port congestion indices, chassis shortages at receiving docks (Long Beach / LA).</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="glass-card rounded-xl p-6 shadow-lg flex flex-col">
+                <h2 class="text-2xl font-semibold mb-2 text-white border-b border-slate-700 pb-2">Predictive Model Weighting</h2>
+                <p class="text-slate-300 mb-6 text-sm">
+                    Distribution of impact variables utilized by the AI to calculate logistical delays. Weather and infrastructure currently dominate the predictive algorithm's variance.
+                </p>
+                <div class="chart-container flex-grow">
+                    <canvas id="riskChart"></canvas>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function wrapLabel(text) {
+            if (text.length <= 16) return text;
+            let lines = [];
+            let currentLine = "";
+            let words = text.split(" ");
+            for (let i = 0; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).trim().length > 16) {
+                    if (currentLine !== "") lines.push(currentLine.trim());
+                    currentLine = words[i];
+                } else {
+                    currentLine += " " + words[i];
+                }
+            }
+            if (currentLine !== "") lines.push(currentLine.trim());
+            return lines;
+        }
+
+        const tooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        const globalOptions = {
+            color: '#cbd5e1',
+            font: { family: 'Inter' }
+        };
+        Chart.defaults.color = '#cbd5e1';
+        Chart.defaults.font.family = 'Inter';
+        Chart.defaults.plugins.legend.labels.color = '#cbd5e1';
+
+        const ctx1 = document.getElementById('transportChart').getContext('2d');
+        const rawLabels1 = ['Hsinchu to Santa Clara', 'Penang to Chandler', 'Incheon to Austin'];
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: rawLabels1.map(wrapLabel),
+                datasets: [
+                    {
+                        label: 'Air Freight (Days)',
+                        data: [3, 5, 4],
+                        backgroundColor: '#38bdf8',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Ocean Freight (Days)',
+                        data: [21, 30, 25],
+                        backgroundColor: '#fbbf24',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Multi-modal / Land (Days)',
+                        data: [24, 35, 29],
+                        backgroundColor: '#818cf8',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: tooltipConfig,
+                    legend: { position: 'bottom' }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        title: { display: true, text: 'Transit Time (Days)', color: '#94a3b8' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        const ctx2 = document.getElementById('predictiveChart').getContext('2d');
+        const rawLabels2 = ['Day 1', 'Day 5', 'Day 10', 'Day 15', 'Day 20', 'Day 25', 'Day 30'];
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: rawLabels2.map(wrapLabel),
+                datasets: [
+                    {
+                        label: 'Baseline Delivery Prediction',
+                        data: [21, 21, 21, 21, 21, 21, 21],
+                        borderColor: '#34d399',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: false,
+                        tension: 0.1
+                    },
+                    {
+                        label: 'AI Synthesized Delay Trajectory',
+                        data: [21, 21.5, 24, 28, 31, 27, 24],
+                        borderColor: '#f87171',
+                        backgroundColor: 'rgba(248, 113, 113, 0.2)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#f87171',
+                        pointRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: tooltipConfig,
+                    legend: { position: 'bottom' }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 15,
+                        max: 35,
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        title: { display: true, text: 'Expected Total Transit (Days)', color: '#94a3b8' }
+                    },
+                    x: {
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' }
+                    }
+                }
+            }
+        });
+
+        const ctx3 = document.getElementById('riskChart').getContext('2d');
+        const rawLabels3 = ['Severe Weather Events', 'Geopolitical Friction', 'Port Congestion', 'Labor Shortages'];
+        new Chart(ctx3, {
+            type: 'doughnut',
+            data: {
+                labels: rawLabels3.map(wrapLabel),
+                datasets: [{
+                    data: [42, 28, 20, 10],
+                    backgroundColor: [
+                        '#38bdf8',
+                        '#fbbf24',
+                        '#f87171',
+                        '#818cf8'
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '65%',
+                plugins: {
+                    tooltip: tooltipConfig,
+                    legend: {
+                        position: 'right',
+                        labels: { boxWidth: 12 }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
