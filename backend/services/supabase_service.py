@@ -81,18 +81,30 @@ def get_aggregate_stats() -> Dict[str, Any]:
     }
 
 
-def get_risk_context_for_route(origin_country: str, destination: str) -> Dict[str, float]:
-    """Derive risk scores from Supabase for a given route."""
+def get_risk_context_for_route(
+    origin_country: str, destination: str, part_type: str = None
+) -> Dict[str, float]:
+    """Derive risk scores from Supabase for a given route. Optionally filter by part_type."""
     rows = load_shipments()
     if not rows:
         return {"weather_risk": 0, "geopolitical_risk": 0, "port_congestion": 0, "labor_risk": 0}
 
-    wr, gr, pc, lr = [], [], [], []
-    dest_lower = (destination or "").lower()
-    for r in rows:
+    def _match(r):
         oc = r.get("origin_country") or ""
         dc = (r.get("destination_city") or "").lower()
-        if oc != origin_country and (not dest_lower or dest_lower not in dc):
+        route_ok = oc == origin_country or (dest_lower and (dest_lower in dc or dc in dest_lower))
+        if not route_ok:
+            return False
+        if part_type:
+            pt = (r.get("part_type") or "").strip()
+            if pt.lower() != (part_type or "").strip().lower():
+                return False
+        return True
+
+    dest_lower = (destination or "").lower()
+    wr, gr, pc, lr = [], [], [], []
+    for r in rows:
+        if not _match(r):
             continue
         try:
             wr.append(float(r.get("weather_risk_score") or 0))
@@ -101,6 +113,24 @@ def get_risk_context_for_route(origin_country: str, destination: str) -> Dict[st
             lr.append(float(r.get("labor_risk_score") or 0))
         except (ValueError, TypeError):
             pass
+
+    # Fallback: if part_type filter yields no rows, recompute without part_type
+    if part_type and not (wr or gr or pc or lr):
+        wr, gr, pc, lr = [], [], [], []
+        for r in rows:
+            oc = r.get("origin_country") or ""
+            dc = (r.get("destination_city") or "").lower()
+            route_ok = oc == origin_country or (dest_lower and (dest_lower in dc or dc in dest_lower))
+            if not route_ok:
+                continue
+            try:
+                wr.append(float(r.get("weather_risk_score") or 0))
+                gr.append(float(r.get("geopolitical_risk_score") or 0))
+                pc.append(float(r.get("port_congestion_score") or 0))
+                lr.append(float(r.get("labor_risk_score") or 0))
+            except (ValueError, TypeError):
+                pass
+
     n = max(len(wr), 1)
     return {
         "weather_risk": sum(wr) / n if wr else 0,
