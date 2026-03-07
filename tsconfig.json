@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowJs": true,
+    "noEmit": true
   },
+  "include": ["dashboard/**/*.js", "dashboard/**/*.jsx"],
   "exclude": ["**/node_modules"]
 }
