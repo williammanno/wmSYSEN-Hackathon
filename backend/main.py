@@ -396,6 +396,19 @@ async def track_shipment(req: TrackShipmentRequest):
     }
 
 
+# ─── Debug (verify env loading) ───────────────────────────────────────────────
+
+@app.get("/api/debug/env")
+async def debug_env():
+    """Check if OPENAI_API_KEY is loaded (does not expose the key)."""
+    key = os.getenv("OPENAI_API_KEY", "")
+    stripped = key.strip() if key else ""
+    return {
+        "openai_configured": bool(stripped),
+        "key_length": len(stripped),
+    }
+
+
 # ─── Reference data for frontend dropdowns ───────────────────────────────────
 
 @app.get("/api/nodes")
