@@ -1,0 +1,18 @@
+.track-result {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.track-result__cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .track-result__cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
 
 :root {
   font-synthesis: none;
@@ -17,9 +17,73 @@ body {
   min-height: 100vh;
   background-color: #212121;
   color: #ffffff;
-  font-family: "EB Garamond", "Garamond", "Cormorant Garamond", "Times New Roman", serif;
+  font-family: "Outfit", system-ui, -apple-system, sans-serif;
 }
 
 #root {
   min-height: 100vh;
+  overflow: visible;
+}
+
+.button {
+  --hover-shadows: 0 0 0 1px rgba(59, 130, 246, 0.5),
+    0 0 30px rgba(59, 130, 246, 0.25),
+    16px 16px 33px #121212,
+    -16px -16px 33px #303030;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  border: none;
+  border-radius: 1.1em;
+  background-color: #212121;
+  cursor: pointer;
+  color: white;
+  padding: 1em 2em;
+  transition: box-shadow ease-in-out 0.3s, background-color ease-in-out 0.1s,
+    letter-spacing ease-in-out 0.1s, transform ease-in-out 0.1s;
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3),
+    0 0 20px rgba(59, 130, 246, 0.15),
+    13px 13px 10px #1c1c1c,
+    -13px -13px 10px #262626;
+  display: flex;
+  align-items: center;
+  outline: none;
+  font-family: inherit;
+}
+
+.button:hover {
+  box-shadow: var(--hover-shadows);
+}
+
+.button:active {
+  box-shadow: var(--hover-shadows);
+  transform: scale(0.95);
+}
+
+.loading {
+  --speed-of-animation: 0.9s;
+  --gap: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 100px;
+  gap: var(--gap);
+  margin: 0 auto;
+}
+
+.loading span {
+  width: 4px;
+  height: 50px;
+  background: #4c86f9;
+  animation: scale var(--speed-of-animation) ease-in-out infinite;
+}
+
+.loading span:nth-child(2) { background: #49a84c; animation-delay: -0.8s; }
+.loading span:nth-child(3) { background: #f6bb02; animation-delay: -0.7s; }
+.loading span:nth-child(4) { background: #f6bb02; animation-delay: -0.6s; }
+.loading span:nth-child(5) { background: #2196f3; animation-delay: -0.5s; }
+
+@keyframes scale {
+  0%, 40%, 100% { transform: scaleY(0.05); }
+  20% { transform: scaleY(1); }
 }

@@ -9,8 +9,6 @@ alwaysApply: true
 body {
   background-color: #212121;
   color: #ffffff;
-  font-family: "Garamond", "EB Garamond", "Cormorant Garamond", "Times New Roman",
-    serif;
 }
 ```
 
