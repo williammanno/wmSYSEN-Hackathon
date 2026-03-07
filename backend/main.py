@@ -6,6 +6,11 @@ Uses OpenAI GPT-4o for LLM, Open-Meteo for weather, routes + Supabase for shipme
 import os
 from pathlib import Path
 
+# Load .env early (local dev). On Posit Connect, variables come from content Settings > Variables.
+from dotenv import load_dotenv
+load_dotenv(Path(__file__).resolve().parent / ".env")
+load_dotenv(Path(__file__).resolve().parent.parent / ".env", override=True)
+
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -411,12 +416,17 @@ async def track_shipment(req: TrackShipmentRequest):
 
 @app.get("/api/debug/env")
 async def debug_env():
-    """Check if OPENAI_API_KEY is loaded (does not expose the key)."""
-    key = os.getenv("OPENAI_API_KEY", "")
-    stripped = key.strip() if key else ""
+    """Check if required env vars are loaded (does not expose values)."""
+    from services.shipment_service import load_shipments
+    rows = load_shipments()
     return {
-        "openai_configured": bool(stripped),
-        "key_length": len(stripped),
+        "openai_configured": bool((os.getenv("OPENAI_API_KEY") or "").strip()),
+        "supabase_configured": bool(
+            (os.getenv("SUPABASE_URL") or "").strip()
+            and ((os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_ANON_KEY") or "").strip())
+        ),
+        "supabase_rows": len(rows),
+        "hint": "If supabase_rows=0, add SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY in Posit Connect, then republish.",
     }
 
 
