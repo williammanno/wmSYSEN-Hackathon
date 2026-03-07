@@ -9,12 +9,17 @@ cd backend
 pip install -r requirements.txt
 ```
 
-## Configure API key (required for AI summaries)
+## Configure API keys
 
-Add this to your `.env` file at the project root:
+Add these to your `.env` file at the project root:
 
 ```bash
+# Required for AI summaries
 OPENAI_API_KEY=your_api_key_here
+
+# For Supabase (shipment data). If omitted, falls back to CSV.
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
 
 ## Start the API
