@@ -1,6 +1,6 @@
 """
 Supply Chain Portal API – semiconductor import/export, planning, tracking.
-Uses Ollama (gemma3:4b) for LLM, Open-Meteo for weather, routes + CSV for decisions.
+Uses OpenAI GPT-4o for LLM, Open-Meteo for weather, routes + CSV for decisions.
 """
 
 from fastapi import FastAPI, HTTPException
@@ -10,7 +10,7 @@ from typing import List, Optional, Dict, Any
 
 from routes import MANUFACTURER_NODES, US_DESTINATIONS, SHIPPING_LANES, get_lane
 from route_suggester import ShipmentRequest, suggest_routes, RouteRecommendation
-from services.ollama_service import generate
+from services.openai_service import generate
 from services.weather_service import get_most_severe_upcoming, get_weather_forecast, get_weather_forecast_risk
 from services.news_service import get_geopolitical_headlines
 from services.csv_service import (
@@ -59,7 +59,7 @@ class TrackShipmentRequest(BaseModel):
 
 @app.post("/api/import-export/summary")
 async def get_import_export_summary(req: ImportExportRequest):
-    """Load weather, news, CSV; use Ollama to generate summary; return cards data."""
+    """Load weather, news, CSV; use GPT-4o to generate summary; return cards data."""
     region = req.region or "Taiwan"
     weather = get_most_severe_upcoming(region)
     headlines = get_geopolitical_headlines(5)
@@ -178,7 +178,7 @@ def _build_plan_risk_scores(risk_context: Dict[str, Any]) -> Dict[str, float]:
 
 @app.post("/api/plan-shipment")
 async def plan_shipment(req: PlanShipmentRequest):
-    """Use route suggester + Ollama to generate shipment plan with best route and rationale."""
+    """Use route suggester + GPT-4o to generate shipment plan with best route and rationale."""
     origin_node = next((n for n in MANUFACTURER_NODES if n.id == req.origin_id), None)
     dest_hub = next((d for d in US_DESTINATIONS if d.id == req.destination_id), None)
     origin_country = origin_node.country if origin_node else ""
@@ -226,7 +226,7 @@ async def plan_shipment(req: PlanShipmentRequest):
         )
         plan = generate(prompt)
 
-        # Fallback: if LLM failed (Ollama not running, error, or empty), build deterministic plan
+        # Fallback: if LLM failed (API error or empty), build deterministic plan
         if not plan or plan.strip().startswith("["):
             plan = _build_fallback_plan(req, origin_name, origin_country, dest_name, best, recs, risk_factors)
 

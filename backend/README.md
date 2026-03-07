@@ -1,6 +1,6 @@
 # Supply Chain Portal Backend
 
-FastAPI backend with Ollama (gemma3:4b), weather, news, and CSV-based decision support.
+FastAPI backend with OpenAI GPT-4o, weather, news, and CSV-based decision support.
 
 ## Setup
 
@@ -9,13 +9,13 @@ cd backend
 pip install -r requirements.txt
 ```
 
-## Run Ollama (required for AI summaries)
+## Configure API key (required for AI summaries)
+
+Add this to your `.env` file at the project root:
 
 ```bash
-ollama run gemma3:4b
+OPENAI_API_KEY=your_api_key_here
 ```
-
-Keep Ollama running. The API calls `http://localhost:11434`.
 
 ## Start the API
 

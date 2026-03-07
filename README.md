@@ -12,7 +12,7 @@ Built for the SYSEN Hackathon.
 - **AI summary** of current semiconductor importing and exporting conditions
 - **Weather forecast** – most severe upcoming weather event in key manufacturing regions (Taiwan, Singapore, Malaysia, South Korea)
 - **Geopolitical headlines** – top news affecting supply chain logistics
-- Uses Open-Meteo (weather) and Ollama (local LLM) for analysis
+- Uses Open-Meteo (weather) and OpenAI GPT-4o for analysis
 
 ### 2. Plan Shipment
 - **Route recommendations** – scored by reliability, speed, priority fit, and risk
@@ -33,7 +33,7 @@ Built for the SYSEN Hackathon.
 |-------|------------|
 | **Frontend** | React, Vite, React Router |
 | **Backend** | FastAPI, Python 3.10+ |
-| **LLM** | Ollama (gemma3:4b) – runs locally |
+| **LLM** | OpenAI GPT-4o (API) |
 | **Weather** | Open-Meteo (free, no API key) |
 | **Data** | Static routes + `semiconductor_shipments_500(1).csv` |
 
@@ -54,7 +54,7 @@ SYSEN-hackathon/
 │   ├── routes.py              # Manufacturer nodes, US destinations, shipping lanes
 │   ├── route_suggester.py     # Route scoring and recommendations
 │   ├── services/
-│   │   ├── ollama_service.py  # Ollama (gemma3:4b) integration
+│   │   ├── openai_service.py  # OpenAI GPT-4o integration
 │   │   ├── weather_service.py # Open-Meteo
 │   │   ├── news_service.py    # Geopolitical headlines
 │   │   └── csv_service.py     # CSV loading and risk context
@@ -71,9 +71,9 @@ SYSEN-hackathon/
 
 - **Node.js** 18+ (for the React app)
 - **Python** 3.10+ (for the backend)
-- **Ollama** – [install](https://ollama.ai) and pull the model:
+- **OpenAI API key** – add this to your `.env` file:
   ```bash
-  ollama pull gemma3:4b
+  OPENAI_API_KEY=your_api_key_here
   ```
 
 ---
@@ -105,22 +105,14 @@ pip install -r requirements.txt
 
 ## Running the App
 
-### 1. Start Ollama (for AI features)
-
-```bash
-ollama run gemma3:4b
-```
-
-Keep this running. The backend calls `http://localhost:11434`.
-
-### 2. Start the backend
+### 1. Start the backend
 
 ```bash
 cd backend
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### 3. Start the frontend
+### 2. Start the frontend
 
 ```bash
 cd dashboard
@@ -169,6 +161,6 @@ Open **http://localhost:5173** in your browser.
 
 ## Notes
 
-- If Ollama is not running, the API returns placeholder text instead of AI-generated content.
+- If `OPENAI_API_KEY` is missing/invalid, the API returns a fallback placeholder error string instead of AI-generated content.
 - CORS is configured for `http://localhost:5173` and `http://127.0.0.1:5173`.
 - The frontend uses a dark theme with Outfit font and neumorphic card styling.

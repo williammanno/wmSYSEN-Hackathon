@@ -3,3 +3,5 @@ node_modules/
 
 # Lockfiles are usually committed; node_modules are not
 # package-lock.json is committed so installs are reproducible
+
+.env
