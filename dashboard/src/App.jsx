@@ -7,10 +7,22 @@ import TrackShipment from './components/TrackShipment';
 import ExploreData from './components/ExploreData';
 import './App.css';
 
+// Derive basename when app is served at subpath (e.g. Posit Connect: /content/123/app/)
+function getBasename() {
+  const path = window.location.pathname.replace(/\/$/, '');
+  const parts = path.split('/').filter(Boolean);
+  const routes = ['dashboard', 'import-export', 'plan-shipment', 'track-shipment', 'explore-data'];
+  const last = parts[parts.length - 1];
+  if (parts.length > 1 && routes.includes(last)) {
+    parts.pop();
+  }
+  return parts.length ? '/' + parts.join('/') : '/';
+}
+
 function App() {
   return (
     <div className="app">
-      <BrowserRouter>
+      <BrowserRouter basename={getBasename()}>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/dashboard" element={<Dashboard />} />
