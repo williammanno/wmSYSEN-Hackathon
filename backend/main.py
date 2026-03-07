@@ -24,6 +24,8 @@ from services.shipment_service import (
     get_delay_probability,
     get_unprecedented_event_probability,
     load_shipments,
+    load_shipment_events,
+    get_event_log_stats,
 )
 
 app = FastAPI(title="Supply Chain Portal API")
@@ -74,13 +76,15 @@ async def get_import_export_summary(req: ImportExportRequest):
     weather = get_most_severe_upcoming(region)
     headlines = get_geopolitical_headlines(5)
     stats = get_aggregate_stats()
+    event_stats = get_event_log_stats()
     risk_scores = _build_plan_risk_scores(get_risk_context_for_route(region, ""))
 
     context = (
         f"Weather: {weather.get('event', 'N/A')} in {region} (severity: {weather.get('severity', 'N/A')}). "
         f"News: {'; '.join(headlines[:3])}. "
         f"Shipment stats: {stats.get('total', 0)} total, statuses {stats.get('by_status', {})}, "
-        f"avg delay {stats.get('avg_delay_hours', 0):.1f}h. Risk events: {stats.get('risk_events', [])[:5]}."
+        f"avg delay {stats.get('avg_delay_hours', 0):.1f}h. Risk events: {stats.get('risk_events', [])[:5]}. "
+        f"Event log: {event_stats.get('total_events', 0)} events, {event_stats.get('exception_count', 0)} exceptions."
     )
     prompt = (
         "In 3–4 short paragraphs, summarize the current state of semiconductor "
@@ -93,6 +97,7 @@ async def get_import_export_summary(req: ImportExportRequest):
         "weather_event": weather,
         "headlines": headlines,
         "stats": stats,
+        "event_log_stats": event_stats,
         "risk_scores": risk_scores,
     }
 
@@ -371,6 +376,11 @@ async def track_shipment(req: TrackShipmentRequest):
         except (ValueError, TypeError, IndexError):
             pass
 
+    # Include event log when shipment_id provided (from shipment_event_log)
+    events = []
+    if req.shipment_id:
+        events = load_shipment_events(shipment_id=req.shipment_id, limit=20)
+
     prompt = (
         f"Route: {lane.origin_id} → {lane.destination_id}, {lane.mode} {lane.route_type}. "
         f"Typical transit: {est_min}-{est_max} days. "
@@ -388,6 +398,7 @@ async def track_shipment(req: TrackShipmentRequest):
         "risk_factor": risk_factor,
         "risk_breakdown": risk_breakdown,
         "delay_factors": delay_factors,
+        "events": events,
         "lane": {
             "lane_id": lane.lane_id,
             "mode": lane.mode,
@@ -411,15 +422,25 @@ async def debug_env():
 
 @app.get("/api/debug/data")
 async def debug_data():
-    """Check which data backend is used and if Supabase returns data."""
-    from services.shipment_service import _backend, load_shipments
+    """Check which data backend is used and if Supabase returns data from both datasets."""
+    from services.shipment_service import _backend, load_shipments, get_event_log_stats
     backend = _backend()
     rows = load_shipments()
+    event_stats = get_event_log_stats()
     return {
         "backend": backend,
-        "shipment_count": len(rows),
+        "shipments_count": len(rows),
+        "shipment_event_log_count": event_stats.get("total_events", 0),
+        "event_exceptions": event_stats.get("exception_count", 0),
         "supabase_configured": bool(os.getenv("SUPABASE_URL") and (os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_ANON_KEY"))),
     }
+
+
+@app.get("/api/shipments/{shipment_id}/events")
+async def get_shipment_events(shipment_id: str, limit: int = 50):
+    """Get event log for a specific shipment (from shipment_event_log)."""
+    events = load_shipment_events(shipment_id=shipment_id, limit=limit)
+    return {"shipment_id": shipment_id, "events": events}
 
 
 # ─── Reference data for frontend dropdowns ───────────────────────────────────
