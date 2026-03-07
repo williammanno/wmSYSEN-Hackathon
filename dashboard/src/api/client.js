@@ -1,4 +1,5 @@
-const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+// Use relative base when empty so API works when app is served at subpath (e.g. Posit Connect)
+const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? '.').replace(/\/$/, '') || '.';
 
 export async function getImportExportSummary(region = 'Taiwan') {
   const res = await fetch(`${API_BASE}/api/import-export/summary`, {
