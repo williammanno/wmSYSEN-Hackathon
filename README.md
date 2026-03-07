@@ -71,10 +71,8 @@ SYSEN-hackathon/
 
 - **Node.js** 18+ (for the React app)
 - **Python** 3.10+ (for the backend)
-- **OpenAI API key** – add this to your `.env` file:
-  ```bash
-  OPENAI_API_KEY=your_api_key_here
-  ```
+- **OpenAI API key** – add to `.env` for AI summaries
+- **Supabase** (optional) – add `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` to `.env` to use Supabase for shipment data; otherwise the app uses the local CSV
 
 ---
 
