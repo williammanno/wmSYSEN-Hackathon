@@ -128,17 +128,6 @@ export default function PlanShipment() {
 
           <div className="plan-form__column">
             <div className="plan-form__row">
-              <label>Priority</label>
-              <select
-                value={form.priority}
-                onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value }))}
-              >
-                <option value="critical">Critical</option>
-                <option value="high">High</option>
-                <option value="standard">Standard</option>
-              </select>
-            </div>
-            <div className="plan-form__row">
               <label>Notes</label>
               <textarea
                 value={form.notes}
