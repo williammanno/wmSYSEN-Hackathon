@@ -1,6 +1,6 @@
 """
 Supply Chain Portal API – semiconductor import/export, planning, tracking.
-Uses OpenAI GPT-4o for LLM, Open-Meteo for weather, routes + Supabase (or CSV fallback) for decisions.
+Uses OpenAI GPT-4o for LLM, Open-Meteo for weather, routes + Supabase for shipment data and decisions.
 """
 
 import os
@@ -71,7 +71,7 @@ class TrackShipmentRequest(BaseModel):
 
 @app.post("/api/import-export/summary")
 async def get_import_export_summary(req: ImportExportRequest):
-    """Load weather, news, CSV; use GPT-4o to generate summary; return cards data."""
+    """Load weather, news, Supabase shipment data; use GPT-4o to generate summary; return cards data."""
     region = req.region or "Taiwan"
     weather = get_most_severe_upcoming(region)
     headlines = get_geopolitical_headlines(5)
@@ -200,7 +200,7 @@ async def plan_shipment(req: PlanShipmentRequest):
     origin_name = origin_node.name if origin_node else req.origin_id
     dest_name = dest_hub.name if dest_hub else req.destination_id
 
-    risk_context = get_risk_context_for_route(origin_country, dest_name)
+    risk_context = get_risk_context_for_route(origin_country, dest_name, req.part_type)
     request = ShipmentRequest(
         company=req.company,
         origin_id=req.origin_id,
@@ -289,7 +289,7 @@ def _compute_risk_factor(
 ) -> dict:
     """
     Compute risk factor 1–10 from:
-    - Delay probability (from CSV)
+    - Delay probability (from Supabase shipments)
     - Weather forecast risk
     - Geopolitics (from CSV)
     - Unprecedented event probability
@@ -327,7 +327,7 @@ def _compute_risk_factor(
 
 @app.post("/api/track-shipment")
 async def track_shipment(req: TrackShipmentRequest):
-    """Estimate arrival, show plan and delay factors from routes + CSV."""
+    """Estimate arrival, show plan and delay factors from routes + Supabase shipment data."""
     from datetime import datetime, timedelta
 
     lanes = [l for l in SHIPPING_LANES if l.origin_id == req.origin_id and l.destination_id == req.destination_id]
@@ -422,13 +422,12 @@ async def debug_env():
 
 @app.get("/api/debug/data")
 async def debug_data():
-    """Check which data backend is used and if Supabase returns data from both datasets."""
-    from services.shipment_service import _backend, load_shipments, get_event_log_stats
-    backend = _backend()
+    """Check if Supabase returns data from shipments and shipment_event_log datasets."""
+    from services.shipment_service import load_shipments, get_event_log_stats
     rows = load_shipments()
     event_stats = get_event_log_stats()
     return {
-        "backend": backend,
+        "backend": "supabase",
         "shipments_count": len(rows),
         "shipment_event_log_count": event_stats.get("total_events", 0),
         "event_exceptions": event_stats.get("exception_count", 0),
