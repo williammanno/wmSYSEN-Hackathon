@@ -150,6 +150,45 @@ def get_delay_probability(origin_country: str, destination: str, transport_mode:
     return delayed / len(matching) if matching else 0.0
 
 
+def load_shipment_events(shipment_id: str = None, limit: int = 100) -> List[Dict[str, Any]]:
+    """Load events from shipment_event_log. Optionally filter by shipment_id."""
+    client = _get_client()
+    if not client:
+        return []
+    try:
+        q = client.table("shipment_event_log").select("*")
+        if shipment_id:
+            q = q.eq("shipment_id", shipment_id)
+        resp = q.order("event_timestamp", desc=True).limit(limit).execute()
+        return [_row_to_dict(r) for r in (resp.data or [])]
+    except Exception:
+        return []
+
+
+def get_event_log_stats() -> Dict[str, Any]:
+    """Aggregate stats from shipment_event_log for dashboard context."""
+    client = _get_client()
+    if not client:
+        return {"total_events": 0, "exception_count": 0, "by_event_type": {}}
+    try:
+        resp = client.table("shipment_event_log").select("event_type, exception_flag").execute()
+        rows = resp.data or []
+        by_type = {}
+        exceptions = 0
+        for r in rows:
+            et = str(r.get("event_type") or "unknown")
+            by_type[et] = by_type.get(et, 0) + 1
+            if r.get("exception_flag"):
+                exceptions += 1
+        return {
+            "total_events": len(rows),
+            "exception_count": exceptions,
+            "by_event_type": by_type,
+        }
+    except Exception:
+        return {"total_events": 0, "exception_count": 0, "by_event_type": {}}
+
+
 def get_unprecedented_event_probability(origin_country: str, active_events: list) -> float:
     """Probability of an unprecedented / rare disruptive event (0–1)."""
     rows = load_shipments()
